@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: spring-plus
+
+jwt:
+  secret:
+    key: ${JWT_SECRET}
