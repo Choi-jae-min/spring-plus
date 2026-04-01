@@ -1,6 +1,7 @@
 package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.dto.request.UserChangePasswordRequest;
 import org.example.expert.domain.user.dto.response.UserResponse;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -21,6 +23,14 @@ public class UserService {
     public UserResponse getUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidRequestException("User not found"));
         return new UserResponse(user.getId(), user.getEmail());
+    }
+
+    public UserResponse searchUser(String nickname) {
+        long start = System.currentTimeMillis();
+        UserResponse response = userRepository.findUserByCondition(nickname);
+        long end = System.currentTimeMillis();
+        log.info("조회 시간: {}ms", end - start);
+        return response;
     }
 
     @Transactional
